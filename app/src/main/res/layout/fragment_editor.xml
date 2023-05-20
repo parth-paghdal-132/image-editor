@@ -1,110 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragments.EditorFragment">
+
     <ImageView
         android:id="@+id/img_to_edit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btns_undo_redo"
-        tools:src="@tools:sample/backgrounds/scenic"
         android:layout_width="0dp"
-        android:layout_height="0dp"/>
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/btns_undo_redo"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/barrier2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/editor_scrollview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/backgrounds/scenic" />
+    <com.editor.image.views.EditorTextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_undo"
-            app:icon="@drawable/ic_undo"
-            app:iconTint="@color/md_theme_primary"
-            app:iconSize="28dp"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_redu"
-            app:icon="@drawable/ic_redu"
-            app:iconTint="@color/md_theme_primary"
-            app:iconSize="28dp"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_done"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        app:icon="@drawable/ic_done"
+        app:iconSize="26dp"
+        app:layout_constraintBottom_toTopOf="@id/editor_scrollview"
+        app:layout_constraintEnd_toStartOf="@id/btn_undo" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_undo"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        app:icon="@drawable/ic_undo"
+        app:iconSize="28dp"
+        app:layout_constraintBottom_toTopOf="@id/editor_scrollview"
+        app:layout_constraintEnd_toStartOf="@id/btn_redu" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_redu"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        app:icon="@drawable/ic_redu"
+        app:iconSize="28dp"
+        app:layout_constraintBottom_toTopOf="@id/editor_scrollview"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <HorizontalScrollView
         android:id="@+id/editor_scrollview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="0dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
-            android:weightSum="4"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_filter"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/filter"
                 app:icon="@drawable/ic_filter"
                 app:iconGravity="top"
-                app:iconSize="28dp"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:iconSize="28dp" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_text"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/text"
                 app:icon="@drawable/ic_text"
                 app:iconGravity="top"
-                app:iconSize="28dp"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:iconSize="28dp" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_crop"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/crop"
                 app:icon="@drawable/ic_crop"
                 app:iconGravity="top"
-                app:iconSize="28dp"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:iconSize="28dp" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_brush"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/brush"
                 app:icon="@drawable/ic_brush"
                 app:iconGravity="top"
-                app:iconSize="28dp"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:iconSize="28dp" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_emoji"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/emoji"
                 app:icon="@drawable/ic_emoji"
                 app:iconGravity="top"
-                app:iconSize="28dp"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:iconSize="28dp" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_sticker"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/sticker"
                 app:icon="@drawable/ic_image"
                 app:iconGravity="top"
-                app:iconSize="28dp"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:iconSize="28dp" />
         </LinearLayout>
     </HorizontalScrollView>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="btn_redu,btn_done,btn_undo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

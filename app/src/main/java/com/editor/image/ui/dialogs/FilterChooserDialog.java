@@ -45,18 +45,16 @@ public class FilterChooserDialog extends BottomSheetDialogFragment {
     }
 
     private void prepareList() {
+        filters.add(new Filter(R.drawable.original_horse, "Original", Filter.FilterName.ORIGINAL));
         filters.add(new Filter(R.drawable.b_n_w_horse, "Black and White", Filter.FilterName.BLACK_AND_WHITE));
         filters.add(new Filter(R.drawable.brightness_horse, "Brightness", Filter.FilterName.BRIGHTNESS));
         filters.add(new Filter(R.drawable.contrast_horse, "Contrast", Filter.FilterName.CONTRAST));
-        filters.add(new Filter(R.drawable.emboss_horse, "Emboss", Filter.FilterName.EMBOSS));
         filters.add(new Filter(R.drawable.gaussian_horse, "Gaussian", Filter.FilterName.GAUSSIAN));
         filters.add(new Filter(R.drawable.grayscale_horse, "Grayscale", Filter.FilterName.GRAYSCALE));
         filters.add(new Filter(R.drawable.hue_horse, "Hue", Filter.FilterName.HUE));
         filters.add(new Filter(R.drawable.invert_horse, "Invert", Filter.FilterName.INVERT));
-        filters.add(new Filter(R.drawable.posterize_horse, "Posterize", Filter.FilterName.POSTERIZE));
         filters.add(new Filter(R.drawable.saturation_horse, "Saturation", Filter.FilterName.SATURATION));
         filters.add(new Filter(R.drawable.sepia_horse, "Sepia", Filter.FilterName.SEPIA));
-        filters.add(new Filter(R.drawable.vignette_horse, "Vignette", Filter.FilterName.VIGNETTE));
     }
 
     private void fillData() {

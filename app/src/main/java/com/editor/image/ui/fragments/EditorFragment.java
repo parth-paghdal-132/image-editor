@@ -1,34 +1,27 @@
 package com.editor.image.ui.fragments;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.editor.image.R;
+import com.editor.image.ImageEditor;
 import com.editor.image.databinding.FragmentEditorBinding;
 import com.editor.image.models.Filter;
 import com.editor.image.models.Image;
 import com.editor.image.ui.dialogs.FilterChooserDialog;
 import com.editor.image.viewmodels.EditorViewModel;
+import com.editor.image.viewmodels.EditorViewModelFactory;
 
 public class EditorFragment extends Fragment implements View.OnClickListener {
 
     private FragmentEditorBinding binding;
     private Image imageToEdit = null;
-    private Bitmap currentBitmap = null;
-
     private EditorViewModel editorViewModel;
     @Override
     public View onCreateView(
@@ -45,13 +38,15 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        editorViewModel = new ViewModelProvider(this).get(EditorViewModel.class);
+        ViewModelProvider.Factory factory = new EditorViewModelFactory((ImageEditor) getActivity().getApplication());
+        editorViewModel = new ViewModelProvider(this, factory).get(EditorViewModel.class);
+
         imageToEdit = EditorFragmentArgs.fromBundle(getArguments()).getImage();
 
         setObservers();
         setListeners();
 
-        editorViewModel.loadInitialBitmap(getContext(), imageToEdit);
+        editorViewModel.loadInitialBitmap(imageToEdit);
     }
 
     @Override

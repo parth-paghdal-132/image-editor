@@ -36,17 +36,15 @@ public class Filter {
     }
 
     public enum FilterName {
+        ORIGINAL,
         BLACK_AND_WHITE,
         BRIGHTNESS,
         CONTRAST,
-        EMBOSS,
         GAUSSIAN,
         GRAYSCALE,
         HUE,
         INVERT,
-        POSTERIZE,
         SATURATION,
-        SEPIA,
-        VIGNETTE
+        SEPIA
     }
 }
