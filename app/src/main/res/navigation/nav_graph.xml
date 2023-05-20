@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/MainFragment">
+
+    <fragment
+        android:id="@+id/MainFragment"
+        android:name="com.editor.image.ui.fragments.MainFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_first">
+        <action
+            android:id="@+id/toEditorFragment"
+            app:destination="@id/EditorFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right">
+            <argument
+                android:name="image"
+                app:argType="com.editor.image.models.Image"
+                app:nullable="true"
+                android:defaultValue="@null"/>
+        </action>
+
+    </fragment>
+    <fragment
+        android:id="@+id/EditorFragment"
+        android:name="com.editor.image.ui.fragments.EditorFragment"
+        android:label="@string/editor_fragment_label"
+        tools:layout="@layout/fragment_editor">
+        <argument
+            android:name="image"
+            app:argType="com.editor.image.models.Image"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+    </fragment>
+</navigation>

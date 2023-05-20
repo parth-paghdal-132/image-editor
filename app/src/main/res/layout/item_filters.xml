@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="5dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_filters"
+        app:strokeWidth="0dp"
+        app:cardCornerRadius="5dp"
+        app:cardPreventCornerOverlap="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardElevation="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/img_filter"
+            tools:src="@drawable/original_horse"
+            android:scaleType="centerCrop"
+            android:layout_width="120dp"
+            android:layout_height="100dp"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/txt_filter_name"
+        app:layout_constraintStart_toStartOf="@id/card_filters"
+        app:layout_constraintEnd_toEndOf="@id/card_filters"
+        app:layout_constraintTop_toBottomOf="@id/card_filters"
+        android:layout_marginTop="5dp"
+        tools:text="Black and white"
+        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
