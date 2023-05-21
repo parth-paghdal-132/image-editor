@@ -53,4 +53,7 @@
     <string name="sticker">Sticker</string>
     <string name="crop">Crop</string>
     <string name="choose_filter">Choose filter</string>
+    <string name="write_text">Write text</string>
+    <string name="write_your_text_here">Write your text here</string>
+    <string name="done">Done</string>
 </resources>

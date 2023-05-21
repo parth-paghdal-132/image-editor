@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/txt_title"
-            android:text="@string/choose_filter"
+            android:text="@string/write_text"
             style="@style/TextAppearance.AppCompat.Title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,33 +34,45 @@
             style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_filters"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="horizontal"
-            tools:itemCount="5"
-            tools:listitem="@layout/item_filters"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_enter_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_close_dialog"
+            android:layout_margin="10dp"
+            style="@style/ThemeOverlay.Material3.TextInputEditText.FilledBox"
+            app:endIconMode="clear_text"
+            android:hint="@string/write_your_text_here"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_color"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_enter_text"
             android:padding="5dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:clipToPadding="false"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_done"
+            android:text="@string/done"
+            style="?attr/materialButtonStyle"
+            app:layout_constraintTop_toBottomOf="@id/recycler_color"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <FrameLayout
-
-        style="@style/Widget.Material3.BottomSheet"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-
-        </RelativeLayout>
-
-    </FrameLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
