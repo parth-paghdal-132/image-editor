@@ -21,7 +21,7 @@ import com.editor.image.databinding.DialogCroppingBinding;
 public class CroppingDialog extends DialogFragment {
 
     private DialogCroppingBinding binding;
-
+    private OnCropping onCropping;
     private Bitmap image;
     public static String IMAGE = "image";
     public static String TAG = "CroppingDialog";
@@ -37,7 +37,7 @@ public class CroppingDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getImageFromArguments();
+        setListeners();
         fillData();
     }
 
@@ -50,14 +50,25 @@ public class CroppingDialog extends DialogFragment {
         getDialog().getWindow().setLayout((int) percentWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    private void getImageFromArguments() {
-        String base64 = getArguments().getString(IMAGE);
-        byte[] base64Image = Base64.decode(base64, Base64.DEFAULT);
-        image = BitmapFactory.decodeByteArray(base64Image, 0, base64Image.length);
+    private void setListeners() {
+        binding.btnDone.setOnClickListener(v -> {
+            onCropping.onCroppingDone(binding.cropImageView.getCroppedImage());
+            dismiss();
+        });
+        binding.btnCancel.setOnClickListener(v -> dismiss());
     }
 
     private void fillData() {
         binding.cropImageView.setImageBitmap(image);
+    }
+
+
+    public void setOnCroppingListener(OnCropping onCropping) {
+        this.onCropping = onCropping;
+    }
+
+    public void setCurrentBitmap(Bitmap bitmap) {
+        image = bitmap;
     }
 
     public interface OnCropping {

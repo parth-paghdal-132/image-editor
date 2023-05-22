@@ -2,12 +2,14 @@ package com.editor.image.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -15,9 +17,8 @@ import com.editor.image.R;
 import com.editor.image.adapters.ImagesAdapter;
 import com.editor.image.data.RemoteDataRepository;
 import com.editor.image.databinding.FragmentFirstBinding;
-import com.editor.image.interfaces.OnItemClickListener;
 import com.editor.image.models.Image;
-import com.editor.image.ui.activities.RetrofitInstance;
+import com.editor.image.data.RetrofitInstance;
 import com.editor.image.utils.Result;
 import com.editor.image.viewmodels.MainViewModel;
 import com.editor.image.viewmodels.MainViewModelFactory;
@@ -39,7 +40,7 @@ public class MainFragment extends Fragment {
             ViewGroup container,
             Bundle savedInstanceState
     ) {
-
+        setHasOptionsMenu(true);
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
@@ -60,6 +61,20 @@ public class MainFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_editor_wall) {
+            navigateToEditorWallFragment();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void attachObservers() {
@@ -108,5 +123,10 @@ public class MainFragment extends Fragment {
         toEditorFragment.setImage(image);
         NavHostFragment.findNavController(MainFragment.this)
                 .navigate(toEditorFragment);
+    }
+
+    private void navigateToEditorWallFragment() {
+        NavHostFragment.findNavController(MainFragment.this)
+                        .navigate(MainFragmentDirections.actionMainFragmentToEditorWallFragment2());
     }
 }

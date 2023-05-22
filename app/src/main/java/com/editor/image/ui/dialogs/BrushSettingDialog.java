@@ -10,30 +10,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.editor.image.adapters.ColorsAdapter;
-import com.editor.image.databinding.DialogEnterTextBinding;
-import com.editor.image.interfaces.OnItemClickListener;
+import com.editor.image.databinding.DialogBrushSettingBinding;
+import com.editor.image.models.Brush;
 import com.editor.image.models.Text;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnterTextDialog extends BottomSheetDialogFragment {
+public class BrushSettingDialog extends BottomSheetDialogFragment {
 
-    public static String TAG = "EnterTextDialog";
-    public static String CURRENT_TEXT = "current_text";
-
-    public Text currentText = new Text("", Color.RED);
-
+    public static String TAG = "BrushSettingDialog";
+    public static String CURRENT_BRUSH = "current_brush";
+    private DialogBrushSettingBinding binding;
+    private OnBrushSelection onBrushSelection;
     private List<Integer> colors = new ArrayList<>();
-    private DialogEnterTextBinding binding;
-
-    private OnTextSelection onTextSelection;
+    private Brush currentBrush = new Brush(10, Color.RED);
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DialogEnterTextBinding.inflate(inflater, container, false);
+        binding = DialogBrushSettingBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -41,8 +38,8 @@ public class EnterTextDialog extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getArguments().getSerializable(CURRENT_TEXT) != null) {
-            currentText = (Text) getArguments().getSerializable(CURRENT_TEXT);
+        if (getArguments().getSerializable(CURRENT_BRUSH) != null) {
+            currentBrush = (Brush) getArguments().getSerializable(CURRENT_BRUSH);
         }
 
         setListeners();
@@ -52,13 +49,10 @@ public class EnterTextDialog extends BottomSheetDialogFragment {
 
     private void setListeners() {
         binding.btnCloseDialog.setOnClickListener(v -> dismiss());
-        binding.btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentText.setText(binding.txtEnterText.getEditText().getText().toString());
-                onTextSelection.onTextSelect(currentText);
-                dismiss();
-            }
+        binding.btnDone.setOnClickListener(v -> {
+            currentBrush.setRadius(binding.seekbarBrushRadius.getProgress());
+            onBrushSelection.onBrushSelect(currentBrush);
+            dismiss();
         });
     }
 
@@ -81,25 +75,25 @@ public class EnterTextDialog extends BottomSheetDialogFragment {
         colorsAdapter.setOnItemClickListener(position -> {
             colorsAdapter.setSelectedColorIndex(position);
             colorsAdapter.notifyDataSetChanged();
-            currentText.setColor(colors.get(position));
+            currentBrush.setColor(colors.get(position));
         });
         int selectedColorIndex = 0;
         for (int i = 0; i < colors.size(); i++) {
-            if(colors.get(i) == currentText.getColor()) {
+            if(colors.get(i) == currentBrush.getColor()) {
                 selectedColorIndex = i;
                 break;
             }
         }
         colorsAdapter.setSelectedColorIndex(selectedColorIndex);
         binding.recyclerColor.setAdapter(colorsAdapter);
-        binding.txtEnterText.getEditText().setText(currentText.getText());
+        binding.seekbarBrushRadius.setProgress(currentBrush.getRadius());
     }
 
-    public void setOnTextSelectionListener(OnTextSelection onTextSelection) {
-        this.onTextSelection = onTextSelection;
+    public void setOnBrushSelectionListener(OnBrushSelection onBrushSelection) {
+        this.onBrushSelection = onBrushSelection;
     }
 
-    public interface OnTextSelection {
-        void onTextSelect(Text text);
+    public interface OnBrushSelection {
+        public void onBrushSelect(Brush brush);
     }
 }

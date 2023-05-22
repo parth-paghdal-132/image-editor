@@ -3,6 +3,7 @@ package com.editor.image.viewmodels;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import java.util.List;
 public class EditorViewModel extends AndroidViewModel {
 
     private Bitmap initialBitmap;
+    private Bitmap croppedBitmap;
     public MutableLiveData<Bitmap> currentBitmap = new MutableLiveData<>();
 
     private FiltersUtil filtersUtil = new FiltersUtil();
@@ -36,8 +38,8 @@ public class EditorViewModel extends AndroidViewModel {
     public MutableLiveData<Boolean> isUndoEnabled = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> isRedoEnabled = new MutableLiveData<>(false);
 
-    public MutableLiveData<EditorTextView> removeEditorTextView = new MutableLiveData<>();
-    public MutableLiveData<EditorTextView> addEditorTextView = new MutableLiveData<>();
+    public MutableLiveData<View> removeEditorTextView = new MutableLiveData<>();
+    public MutableLiveData<View> addEditorTextView = new MutableLiveData<>();
 
     public EditorViewModel(ImageEditor imageEditor) {
         super(imageEditor);
@@ -66,13 +68,21 @@ public class EditorViewModel extends AndroidViewModel {
 
     public void applyFilter(Filter filter, boolean addToHistory) {
         if(filter.getFilterName() == Filter.FilterName.ORIGINAL) {
-            currentBitmap.postValue(initialBitmap);
+            if(croppedBitmap != null) {
+                currentBitmap.postValue(croppedBitmap);
+            } else {
+                currentBitmap.postValue(initialBitmap);
+            }
             return;
         }
         if(addToHistory) {
-            addToHistory(new History(History.Type.FILTER, filter, null));
+            addToHistory(new History(History.Type.FILTER, filter, null, null, null, null));
         }
-        currentBitmap.postValue(filtersUtil.applyFilter(getApplication().getApplicationContext(), filter, initialBitmap));
+        if (croppedBitmap != null) {
+            currentBitmap.postValue(filtersUtil.applyFilter(getApplication().getApplicationContext(), filter, croppedBitmap));
+        } else {
+            currentBitmap.postValue(filtersUtil.applyFilter(getApplication().getApplicationContext(), filter, initialBitmap));
+        }
     }
 
     public void addToHistory(History history) {
@@ -94,6 +104,12 @@ public class EditorViewModel extends AndroidViewModel {
         } else if (currentItem.getType() == History.Type.FILTER) {
             applyFilter(new Filter(R.drawable.original_horse, "Original", Filter.FilterName.ORIGINAL), false);
             currentHistoryIndex = currentHistoryIndex - 1;
+        } else if (currentItem.getType() == History.Type.CROP) {
+            currentBitmap.postValue(currentItem.getPreviousBitmap());
+            currentHistoryIndex = currentHistoryIndex - 1;
+        } else if (currentItem.getType() == History.Type.BRUSH) {
+            removeEditorTextView.postValue(currentItem.getDrawingView());
+            currentHistoryIndex = currentHistoryIndex - 1;
         }
         enableDisableUndoRedoButton();
     }
@@ -105,7 +121,19 @@ public class EditorViewModel extends AndroidViewModel {
             addEditorTextView.postValue(currentItem.getEditorTextView());
         } else if (currentItem.getType() == History.Type.FILTER) {
             applyFilter(currentItem.getFilter(), false);
+        } else if (currentItem.getType() == History.Type.CROP) {
+            showCroppedBitmap(currentItem.getBitmap(), false);
+        } else if (currentItem.getType() == History.Type.BRUSH) {
+            addEditorTextView.postValue(currentItem.getDrawingView());
         }
         enableDisableUndoRedoButton();
+    }
+
+    public void showCroppedBitmap(Bitmap bitmap, boolean addToHistory) {
+        if(addToHistory) {
+            addToHistory(new History(History.Type.CROP, null, null, bitmap, currentBitmap.getValue(), null));
+            croppedBitmap = currentBitmap.getValue();
+        }
+        currentBitmap.postValue(bitmap);
     }
 }

@@ -15,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
         app:layout_constraintHeight="wrap_content"
+        android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="0dp">
         <ImageView
@@ -23,6 +24,14 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             tools:src="@tools:sample/backgrounds/scenic" />
+        <RelativeLayout
+            android:id="@+id/rel_text_container"
+            android:layout_alignTop="@id/img_to_edit"
+            android:layout_alignBottom="@id/img_to_edit"
+            android:layout_alignStart="@id/img_to_edit"
+            android:layout_alignEnd="@id/img_to_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -65,6 +74,7 @@
         android:id="@+id/editor_scrollview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -73,6 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_gravity="center"
             android:weightSum="4">
 
             <com.google.android.material.button.MaterialButton
@@ -115,15 +126,6 @@
                 app:iconGravity="top"
                 app:iconSize="28dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_sticker"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sticker"
-                app:icon="@drawable/ic_image"
-                app:iconGravity="top"
-                app:iconSize="28dp" />
         </LinearLayout>
     </HorizontalScrollView>
 

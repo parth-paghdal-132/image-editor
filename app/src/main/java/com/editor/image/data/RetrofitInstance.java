@@ -1,4 +1,4 @@
-package com.editor.image.ui.activities;
+package com.editor.image.data;
 
 import com.editor.image.data.RemoteDataRepository;
 import com.editor.image.utils.Constants;

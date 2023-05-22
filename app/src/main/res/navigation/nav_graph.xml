@@ -23,6 +23,9 @@
                 app:nullable="true"
                 android:defaultValue="@null"/>
         </action>
+        <action
+            android:id="@+id/action_MainFragment_to_editorWallFragment2"
+            app:destination="@id/editorWallFragment" />
 
     </fragment>
     <fragment
@@ -35,5 +38,78 @@
             app:argType="com.editor.image.models.Image"
             app:nullable="true"
             android:defaultValue="@null"/>
+        <action
+            android:id="@+id/toUploadFragment"
+            app:destination="@id/uploadFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/MainFragment">
+            <argument
+                android:name="filePath"
+                app:argType="string"
+                app:nullable="true"
+                android:defaultValue="@null"/>
+            <argument
+                android:name="originalImage"
+                app:argType="string"
+                app:nullable="true"
+                android:defaultValue="@null"/>
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/uploadFragment"
+        tools:layout="@layout/fragment_upload"
+        android:name="com.editor.image.ui.fragments.UploadFragment"
+        android:label="@string/upload">
+        <argument
+            android:name="filePath"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+        <argument
+            android:name="originalImage"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+        <action
+            android:id="@+id/toEditorWallFragment"
+            app:destination="@id/editorWallFragment"
+            app:popUpTo="@id/MainFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/editorWallFragment"
+        tools:layout="@layout/fragment_editor_wall"
+        android:name="com.editor.image.ui.fragments.EditorWallFragment"
+        android:label="@string/editor_wall" >
+        <action
+            android:id="@+id/toEditorWallDetailFragment"
+            app:destination="@id/editorWallDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right">
+            <argument
+                android:name="images"
+                app:argType="com.editor.image.models.editorwall.EditorWall"
+                android:defaultValue="@null"
+                app:nullable="true"/>
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/editorWallDetailFragment"
+        android:name="com.editor.image.ui.fragments.EditorWallDetailFragment"
+        tools:layout="@layout/fragment_editor_wall_detail"
+        android:label="@string/images" >
+        <argument
+            android:name="images"
+            app:argType="com.editor.image.models.editorwall.EditorWall"
+            android:defaultValue="@null"
+            app:nullable="true"/>
     </fragment>
 </navigation>

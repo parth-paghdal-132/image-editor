@@ -1,5 +1,6 @@
 package com.editor.image.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ public class ColorsAdapter extends RecyclerView.Adapter<ColorsAdapter.ColorsView
 
     private OnItemClickListener onItemClickListener = null;
     private List<Integer> dataset;
-
+    private int selectedColorIndex = 0;
     public ColorsAdapter(List<Integer> dataset) {
         this.dataset = dataset;
     }
@@ -46,6 +47,10 @@ public class ColorsAdapter extends RecyclerView.Adapter<ColorsAdapter.ColorsView
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void setSelectedColorIndex(int index) {
+        selectedColorIndex = index;
+    }
+
     public class ColorsViewHolder extends RecyclerView.ViewHolder {
 
         private ItemColorBinding binding;
@@ -56,6 +61,11 @@ public class ColorsAdapter extends RecyclerView.Adapter<ColorsAdapter.ColorsView
 
         public void bind(int color) {
             binding.getRoot().setCardBackgroundColor(color);
+            if(selectedColorIndex == getAdapterPosition()) {
+                binding.getRoot().setStrokeColor(Color.GREEN);
+            } else {
+                binding.getRoot().setStrokeColor(Color.GRAY);
+            }
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -30,8 +30,11 @@ public abstract class EditorFrameView extends FrameLayout {
 
     private double centerX, centerY;
 
-    private final static int BUTTON_SIZE_DP = 30;
-    private final static int SELF_SIZE_DP = 100;
+    private final static int BUTTON_SIZE_IN_DP = 30;
+    private final static int SELF_SIZE_IN_DP = 100;
+
+    protected abstract View getMainView();
+    protected abstract void onChildClick();
 
     public EditorFrameView(Context context) {
         super(context);
@@ -59,42 +62,39 @@ public abstract class EditorFrameView extends FrameLayout {
         this.imgEdit.setImageResource(R.drawable.ic_edit);
 
         this.setTag("DraggableViewGroup");
-        this.borderView.setTag("iv_border");
-        this.imgScale.setTag("iv_scale");
-        this.imgDelete.setTag("iv_delete");
-        this.imgEdit.setTag("imgEdit");
+        this.imgScale.setTag("imgScale");
 
-        int margin = convertDpToPixel(BUTTON_SIZE_DP, getContext())/2;
-        int size = convertDpToPixel(SELF_SIZE_DP, getContext());
+        int margin = convertDpToPixel(BUTTON_SIZE_IN_DP, getContext())/2;
+        int size = convertDpToPixel(SELF_SIZE_IN_DP, getContext());
 
         LayoutParams this_params = new LayoutParams(size, size);
         this_params.gravity = Gravity.CENTER;
 
-        LayoutParams iv_main_params =
+        LayoutParams mainLayoutParams =
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        iv_main_params.setMargins(margin,margin,margin,margin);
+        mainLayoutParams.setMargins(margin,margin,margin,margin);
 
-        LayoutParams iv_border_params =
+        LayoutParams borderLayoutParams =
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        iv_border_params.setMargins(margin,margin,margin,margin);
+        borderLayoutParams.setMargins(margin,margin,margin,margin);
 
-        LayoutParams iv_scale_params =
-                new LayoutParams(convertDpToPixel(BUTTON_SIZE_DP, getContext()), convertDpToPixel(BUTTON_SIZE_DP, getContext()));
-        iv_scale_params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        LayoutParams imgScaleLayoutParams =
+                new LayoutParams(convertDpToPixel(BUTTON_SIZE_IN_DP, getContext()), convertDpToPixel(BUTTON_SIZE_IN_DP, getContext()));
+        imgScaleLayoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
 
-        LayoutParams iv_delete_params =
-                new LayoutParams(convertDpToPixel(BUTTON_SIZE_DP, getContext()), convertDpToPixel(BUTTON_SIZE_DP, getContext()));
-        iv_delete_params.gravity = Gravity.TOP | Gravity.RIGHT;
+        LayoutParams imgDeleteLayoutParams =
+                new LayoutParams(convertDpToPixel(BUTTON_SIZE_IN_DP, getContext()), convertDpToPixel(BUTTON_SIZE_IN_DP, getContext()));
+        imgDeleteLayoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
 
         LayoutParams imgEditParams =
-                new LayoutParams(convertDpToPixel(BUTTON_SIZE_DP, getContext()), convertDpToPixel(BUTTON_SIZE_DP, getContext()));
+                new LayoutParams(convertDpToPixel(BUTTON_SIZE_IN_DP, getContext()), convertDpToPixel(BUTTON_SIZE_IN_DP, getContext()));
         imgEditParams.gravity = Gravity.TOP | Gravity.LEFT;
 
         this.setLayoutParams(this_params);
-        this.addView(getMainView(), iv_main_params);
-        this.addView(borderView, iv_border_params);
-        this.addView(imgScale, iv_scale_params);
-        this.addView(imgDelete, iv_delete_params);
+        this.addView(getMainView(), mainLayoutParams);
+        this.addView(borderView, borderLayoutParams);
+        this.addView(imgScale, imgScaleLayoutParams);
+        this.addView(imgDelete, imgDeleteLayoutParams);
         this.addView(imgEdit, imgEditParams);
 
         this.setOnTouchListener(touchListener);
@@ -108,8 +108,10 @@ public abstract class EditorFrameView extends FrameLayout {
         this.imgEdit.setOnClickListener(v -> onChildClick());
     }
 
-    protected abstract View getMainView();
-    protected abstract void onChildClick();
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+    }
 
     private OnTouchListener touchListener = new OnTouchListener() {
         @Override
@@ -132,7 +134,7 @@ public abstract class EditorFrameView extends FrameLayout {
                     case MotionEvent.ACTION_UP:
                         break;
                 }
-            }else if(view.getTag().equals("iv_scale")){
+            }else if(view.getTag().equals("imgScale")){
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
 
@@ -160,18 +162,15 @@ public abstract class EditorFrameView extends FrameLayout {
                         break;
                     case MotionEvent.ACTION_MOVE:
 
-                        float rotateNewX = event.getRawX();
-                        float rotateNewY = event.getRawY();
 
                         double angle_diff = Math.abs(
                                 Math.atan2(event.getRawY() - scaleOrgY, event.getRawX() - scaleOrgX)
                                         - Math.atan2(scaleOrgY - centerY, scaleOrgX - centerX))*180/Math.PI;
 
-
                         double length1 = getLength(centerX, centerY, scaleOrgX, scaleOrgY);
                         double length2 = getLength(centerX, centerY, event.getRawX(), event.getRawY());
 
-                        int size = convertDpToPixel(SELF_SIZE_DP, getContext());
+                        int size = convertDpToPixel(SELF_SIZE_IN_DP, getContext());
                         if(length2 > length1
                                 && (angle_diff < 25 || Math.abs(angle_diff-180)<25)
                         ) {
@@ -197,8 +196,6 @@ public abstract class EditorFrameView extends FrameLayout {
                             onScaling(false);
                         }
 
-                        //rotate
-
                         double angle = Math.atan2(event.getRawY() - centerY, event.getRawX() - centerX) * 180 / Math.PI;
 
                         setRotation((float) angle - 45);
@@ -218,11 +215,6 @@ public abstract class EditorFrameView extends FrameLayout {
             return true;
         }
     };
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-    }
 
     private double getLength(double x1, double y1, double x2, double y2){
         return Math.sqrt(Math.pow(y2-y1, 2)+Math.pow(x2-x1, 2));
@@ -252,6 +244,13 @@ public abstract class EditorFrameView extends FrameLayout {
 
     protected void onRotating(){}
 
+    private static int convertDpToPixel(float dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return (int)px;
+    }
+
     private class BorderView extends View {
 
         public BorderView(Context context) {
@@ -269,10 +268,8 @@ public abstract class EditorFrameView extends FrameLayout {
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-            // Draw sticker border
 
             LayoutParams params = (LayoutParams)this.getLayoutParams();
-
 
             Rect border = new Rect();
             border.left = (int)this.getLeft()-params.leftMargin;
@@ -286,12 +283,5 @@ public abstract class EditorFrameView extends FrameLayout {
             canvas.drawRect(border, borderPaint);
 
         }
-    }
-
-    private static int convertDpToPixel(float dp, Context context){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return (int)px;
     }
 }
