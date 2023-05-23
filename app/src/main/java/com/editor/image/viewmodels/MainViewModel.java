@@ -13,6 +13,7 @@ import com.editor.image.utils.Constants;
 import com.editor.image.utils.Result;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -30,17 +31,23 @@ public class MainViewModel extends ViewModel {
         this.remoteDataRepository = remoteDataRepository;
     }
 
+    private List<Image> imageList = null;
     public MutableLiveData<Result<List<Image>>> apiData = new MutableLiveData<>();
     public MutableLiveData<Result<UploadLink>> uploadLinkLiveData = new MutableLiveData<>();
     public MutableLiveData<Result<UploadResult>> uploadResultLiveData = new MutableLiveData<>();
     public MutableLiveData<Result<List<EditorWall>>> editorWallLiveData = new MutableLiveData<>();
 
     public void fetchData() {
+        if(imageList != null) {
+            apiData.postValue(new Result.Success<>(imageList));
+            return;
+        }
         apiData.postValue(new Result.Loading<>());
         remoteDataRepository.getImages().enqueue(new Callback<List<Image>>() {
             @Override
             public void onResponse(Call<List<Image>> call, Response<List<Image>> response) {
                 List<Image> images = response.body();
+                imageList = new ArrayList<>(images);
                 apiData.postValue(new Result.Success<>(images));
             }
 

@@ -46,7 +46,7 @@ public class FilterChooserDialog extends BottomSheetDialogFragment {
 
     private void prepareList() {
         filters.add(new Filter(R.drawable.original_horse, "Original", Filter.FilterName.ORIGINAL));
-        filters.add(new Filter(R.drawable.b_n_w_horse, "Black and White", Filter.FilterName.BLACK_AND_WHITE));
+        filters.add(new Filter(R.drawable.old_horse, "Old", Filter.FilterName.OLD));
         filters.add(new Filter(R.drawable.brightness_horse, "Brightness", Filter.FilterName.BRIGHTNESS));
         filters.add(new Filter(R.drawable.contrast_horse, "Contrast", Filter.FilterName.CONTRAST));
         filters.add(new Filter(R.drawable.gaussian_horse, "Gaussian", Filter.FilterName.GAUSSIAN));

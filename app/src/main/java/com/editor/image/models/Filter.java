@@ -45,6 +45,7 @@ public class Filter {
         HUE,
         INVERT,
         SATURATION,
-        SEPIA
+        SEPIA,
+        OLD
     }
 }

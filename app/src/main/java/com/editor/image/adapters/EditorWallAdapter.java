@@ -13,16 +13,18 @@ import com.editor.image.R;
 import com.editor.image.databinding.ItemEditorWallBinding;
 import com.editor.image.databinding.ItemFiltersBinding;
 import com.editor.image.interfaces.OnItemClickListener;
+import com.editor.image.models.EditorWallSimplified;
 import com.editor.image.models.editorwall.EditorWall;
+import com.editor.image.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EditorWallAdapter extends RecyclerView.Adapter<EditorWallAdapter.EditorWallViewHolder> {
     private OnItemClickListener onItemClickListener = null;
-    private List<EditorWall> dataset = new ArrayList<>();
+    private List<EditorWallSimplified> dataset = new ArrayList<>();
 
-    public EditorWallAdapter(List<EditorWall> dataset) {
+    public EditorWallAdapter(List<EditorWallSimplified> dataset) {
         this.dataset = dataset;
     }
 
@@ -60,17 +62,27 @@ public class EditorWallAdapter extends RecyclerView.Adapter<EditorWallAdapter.Ed
             this.binding = binding;
         }
 
-        public void bind(EditorWall editorWall) {
+        public void bind(EditorWallSimplified editorWallSimplified) {
             binding.getRoot().setOnClickListener(v -> onItemClickListener.onItemClick(getAdapterPosition()));
-
+            if(editorWallSimplified.getLastUpdatedOn() != null) {
+                binding.txtLastUpdatedOn.setVisibility(View.VISIBLE);
+                binding.txtLastUpdatedOn.setText(
+                    binding.getRoot().getContext().getString(
+                        R.string.last_updated_on,
+                        DateUtils.getFormattedDate(editorWallSimplified.getLastUpdatedOn())
+                    )
+                );
+            } else {
+                binding.txtLastUpdatedOn.setVisibility(View.GONE);
+            }
             Glide.with(binding.getRoot())
-                    .load(Uri.parse(editorWall.getOriginalImageUrl()))
+                    .load(Uri.parse(editorWallSimplified.getOriginalImageUrl()))
                     .placeholder(R.drawable.loading_img)
                     .error(R.drawable.loading_img)
                     .into(binding.imgOriginal);
 
             Glide.with(binding.getRoot())
-                    .load(Uri.parse(editorWall.getEditedImageUrl()))
+                    .load(Uri.parse(editorWallSimplified.getEditedImageUrl()))
                     .placeholder(R.drawable.loading_img)
                     .error(R.drawable.loading_img)
                     .into(binding.imgEdited);

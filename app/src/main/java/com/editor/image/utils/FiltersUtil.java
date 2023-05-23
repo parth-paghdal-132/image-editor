@@ -3,6 +3,7 @@ package com.editor.image.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
@@ -23,9 +24,6 @@ public class FiltersUtil {
         );
         switch (filter.getFilterName()) {
 
-            case BLACK_AND_WHITE:
-                applyBlackAndWhiteFilter(sourceBitmap, result);
-                break;
             case BRIGHTNESS:
                 applyBrightnessFilter(sourceBitmap, result);
                 break;
@@ -49,6 +47,9 @@ public class FiltersUtil {
                 break;
             case SEPIA:
                 applySepiaFilter(sourceBitmap, result);
+                break;
+            case OLD:
+                result = applyOldFilter(sourceBitmap);
                 break;
         }
         return result;
@@ -174,4 +175,36 @@ public class FiltersUtil {
         canvas.drawBitmap(sourceBitmap, 0, 0, paint);
     }
 
+    private Bitmap applyOldFilter(Bitmap sourceBitmap) {
+
+        int width = sourceBitmap.getWidth();
+        int height = sourceBitmap.getHeight();
+
+        int pixelColor = 0;
+        int pixelRed = 0;
+        int pixelGreen = 0;
+        int pixelBlue = 0;
+        int newRed = 0;
+        int newGreen = 0;
+        int newBlue = 0;
+
+        int[] pixels = new int[width * height];
+        sourceBitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        for (int i = 0; i < height; i++) {
+            for (int k = 0; k < width; k++) {
+                pixelColor = pixels[width * i + k];
+                pixelRed = Color.red(pixelColor);
+                pixelGreen = Color.green(pixelColor);
+                pixelBlue = Color.blue(pixelColor);
+                newRed = (int) (0.393 * pixelRed + 0.769 * pixelGreen + 0.189 * pixelBlue);
+                newGreen = (int) (0.349 * pixelRed + 0.686 * pixelGreen + 0.168 * pixelBlue);
+                newBlue = (int) (0.272 * pixelRed + 0.534 * pixelGreen + 0.131 * pixelBlue);
+                int newColor = Color.argb(255, Math.min(newRed, 255), Math.min(newGreen, 255), Math.min(newBlue, 255));
+                pixels[width * i + k] = newColor;
+            }
+        }
+
+        Bitmap result = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888);
+        return result;
+    }
 }

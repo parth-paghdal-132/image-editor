@@ -34,8 +34,8 @@ public abstract class EditorFrameView extends FrameLayout {
     private final static int SELF_SIZE_IN_DP = 100;
 
     protected abstract View getMainView();
-    protected abstract void onChildClick();
-
+    protected abstract void onEditClick();
+    protected abstract void onSelfClick();
     public EditorFrameView(Context context) {
         super(context);
         init(context);
@@ -105,7 +105,7 @@ public abstract class EditorFrameView extends FrameLayout {
                 myCanvas.removeView(EditorFrameView.this);
             }
         });
-        this.imgEdit.setOnClickListener(v -> onChildClick());
+        this.imgEdit.setOnClickListener(v -> onEditClick());
     }
 
     @Override
@@ -228,7 +228,14 @@ public abstract class EditorFrameView extends FrameLayout {
             imgEdit.setVisibility(View.GONE);
             imgScale.setOnTouchListener(null);
             this.setOnTouchListener(null);
-            this.setOnClickListener(v -> commitChanges(false));
+            this.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    onSelfClick();
+                    commitChanges(false);
+                }
+            });
+//            this.setOnClickListener(v -> commitChanges(false));
         } else {
             borderView.setVisibility(View.VISIBLE);
             imgScale.setVisibility(View.VISIBLE);

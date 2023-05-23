@@ -14,6 +14,8 @@ public class EditorTextView extends EditorFrameView {
     private AutoResizeTextView textView;
 
     private Text data = new Text("", Color.RED);
+
+    private OnClick onClick;
     public EditorTextView(Context context) {
         super(context);
     }
@@ -48,8 +50,13 @@ public class EditorTextView extends EditorFrameView {
     }
 
     @Override
-    protected void onChildClick() {
-        performClick();
+    protected void onEditClick() {
+        onClick.onEditClick();
+    }
+
+    @Override
+    protected void onSelfClick() {
+        onClick.onSelfClick();
     }
 
     @Override
@@ -67,4 +74,13 @@ public class EditorTextView extends EditorFrameView {
         return data;
     }
 
+
+    public void setOnClick(OnClick onClick) {
+        this.onClick = onClick;
+    }
+
+    public interface OnClick {
+        void onEditClick();
+        void onSelfClick();
+    }
 }

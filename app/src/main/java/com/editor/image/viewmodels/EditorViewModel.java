@@ -107,6 +107,7 @@ public class EditorViewModel extends AndroidViewModel {
         } else if (currentItem.getType() == History.Type.CROP) {
             currentBitmap.postValue(currentItem.getPreviousBitmap());
             currentHistoryIndex = currentHistoryIndex - 1;
+            croppedBitmap = null;
         } else if (currentItem.getType() == History.Type.BRUSH) {
             removeEditorTextView.postValue(currentItem.getDrawingView());
             currentHistoryIndex = currentHistoryIndex - 1;
@@ -122,6 +123,7 @@ public class EditorViewModel extends AndroidViewModel {
         } else if (currentItem.getType() == History.Type.FILTER) {
             applyFilter(currentItem.getFilter(), false);
         } else if (currentItem.getType() == History.Type.CROP) {
+            croppedBitmap = currentItem.getBitmap();
             showCroppedBitmap(currentItem.getBitmap(), false);
         } else if (currentItem.getType() == History.Type.BRUSH) {
             addEditorTextView.postValue(currentItem.getDrawingView());
@@ -132,8 +134,17 @@ public class EditorViewModel extends AndroidViewModel {
     public void showCroppedBitmap(Bitmap bitmap, boolean addToHistory) {
         if(addToHistory) {
             addToHistory(new History(History.Type.CROP, null, null, bitmap, currentBitmap.getValue(), null));
-            croppedBitmap = currentBitmap.getValue();
+            croppedBitmap = bitmap;
         }
         currentBitmap.postValue(bitmap);
+    }
+
+    public void disableUndoRedoButtons() {
+        isUndoEnabled.postValue(false);
+        isRedoEnabled.postValue(false);
+    }
+
+    public void enableUndoRedoButtons() {
+        enableDisableUndoRedoButton();
     }
 }

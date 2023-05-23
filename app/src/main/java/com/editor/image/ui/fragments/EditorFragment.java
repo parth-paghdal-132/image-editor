@@ -48,6 +48,7 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
 
     private View focusedView;
     LoadingDialog loadingDialog = new LoadingDialog();
+    private boolean isInEditingMode = false;
 
     @Override
     public View onCreateView(
@@ -87,7 +88,7 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
         setListeners();
 
         editorViewModel.loadInitialBitmap(imageToEdit);
-
+        removeUIForEditing();
     }
 
 
@@ -163,7 +164,6 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
     private void showFilterChooseDialog() {
         FilterChooserDialog filterChooserDialog = new FilterChooserDialog();
         filterChooserDialog.setOnFilterSelect(filter -> {
-            loadingDialog.show(getChildFragmentManager(), LoadingDialog.TAG);
             editorViewModel.applyFilter(filter, true);
         });
         filterChooserDialog.show(getChildFragmentManager(), FilterChooserDialog.TAG);
@@ -175,12 +175,24 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
             EditorTextView editorTextView = new EditorTextView(getContext());
             editorTextView.setData(newText);
             binding.relTextContainer.addView(editorTextView);
-            editorTextView.setOnClickListener(v -> showTextDialog(editorTextView.getData(), editorTextView));
+            editorTextView.setOnClick(new EditorTextView.OnClick() {
+                @Override
+                public void onEditClick() {
+                    showTextDialog(editorTextView.getData(), editorTextView);
+                }
+
+                @Override
+                public void onSelfClick() {
+                    makeUIForEditing();
+                }
+            });
             if(focusedView != null) {
                 performDoneOp();
             }
             focusedView = editorTextView;
             editorViewModel.addToHistory(new History(History.Type.TEXT, null, editorTextView, null, null, null));
+            isInEditingMode = true;
+            makeUIForEditing();
         });
         Bundle bundle = new Bundle();
         bundle.putSerializable(EnterTextDialog.CURRENT_TEXT, new Text("", Color.RED));
@@ -196,7 +208,10 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
             }
             focusedView = editorTextView;
             editorTextView.setData(text1);
-            editorViewModel.addToHistory(new History(History.Type.TEXT, null, editorTextView, null, null, null));
+            editorTextView.commitChanges(false);
+//            editorViewModel.addToHistory(new History(History.Type.TEXT, null, editorTextView, null, null, null));
+            isInEditingMode = true;
+            makeUIForEditing();
         });
         Bundle bundle = new Bundle();
         bundle.putSerializable(EnterTextDialog.CURRENT_TEXT, text);
@@ -226,6 +241,8 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
     }
 
     private void performDoneOp() {
+        isInEditingMode = false;
+        removeUIForEditing();
         if(focusedView instanceof EditorTextView) {
             ((EditorTextView) focusedView).commitChanges(true);
         }
@@ -254,6 +271,8 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
         binding.relTextContainer.addView(drawingView, params);
         drawingView.setBrush(brush);
         focusedView = drawingView;
+        isInEditingMode = true;
+        makeUIForEditing();
     }
 
     private void showConfirmationDialog() {
@@ -304,5 +323,23 @@ public class EditorFragment extends Fragment implements View.OnClickListener {
         toUploadFragment.setFilePath(filePath);
         toUploadFragment.setOriginalImage(imageToEdit.getUrl());
         NavHostFragment.findNavController(EditorFragment.this).navigate(toUploadFragment);
+    }
+
+    private void makeUIForEditing() {
+        binding.btnBrush.setEnabled(false);
+        binding.btnAddText.setEnabled(false);
+        binding.btnCrop.setEnabled(false);
+        binding.btnAddFilter.setEnabled(false);
+        binding.btnDone.setEnabled(true);
+        editorViewModel.disableUndoRedoButtons();
+    }
+
+    private void removeUIForEditing() {
+        binding.btnBrush.setEnabled(true);
+        binding.btnAddText.setEnabled(true);
+        binding.btnCrop.setEnabled(true);
+        binding.btnAddFilter.setEnabled(true);
+        binding.btnDone.setEnabled(false);
+        editorViewModel.enableUndoRedoButtons();
     }
 }

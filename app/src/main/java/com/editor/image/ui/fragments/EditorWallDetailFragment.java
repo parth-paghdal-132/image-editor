@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.editor.image.adapters.EditorWallDetailPagerAdapter;
 import com.editor.image.databinding.FragmentEditorWallDetailBinding;
+import com.editor.image.models.EditorWallSimplified;
 import com.editor.image.models.editorwall.EditorWall;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
 public class EditorWallDetailFragment extends Fragment {
     private FragmentEditorWallDetailBinding binding;
 
-    private EditorWall editorWall;
+    private EditorWallSimplified editorWallSimplified;
 
     @Nullable
     @Override
@@ -32,15 +33,15 @@ public class EditorWallDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        editorWall = EditorWallDetailFragmentArgs.fromBundle(getArguments()).getImages();
+        editorWallSimplified = EditorWallDetailFragmentArgs.fromBundle(getArguments()).getEditorWallSimplified();
 
         fillData();
     }
 
     private void fillData() {
         List<String> images = new ArrayList<>();
-        images.add(editorWall.getOriginalImageUrl());
-        images.add(editorWall.getEditedImageUrl());
+        images.add(editorWallSimplified.getOriginalImageUrl());
+        images.add(editorWallSimplified.getEditedImageUrl());
 
         EditorWallDetailPagerAdapter editorWallDetailPagerAdapter = new EditorWallDetailPagerAdapter(this);
         editorWallDetailPagerAdapter.setDataSet(images);

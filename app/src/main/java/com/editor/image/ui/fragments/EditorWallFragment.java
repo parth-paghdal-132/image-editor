@@ -18,13 +18,18 @@ import com.editor.image.data.RemoteDataRepository;
 import com.editor.image.data.RetrofitInstance;
 import com.editor.image.databinding.FragmentEditorWallBinding;
 import com.editor.image.interfaces.OnItemClickListener;
+import com.editor.image.models.EditorWallSimplified;
 import com.editor.image.models.editorwall.EditorWall;
 import com.editor.image.ui.dialogs.LoadingDialog;
+import com.editor.image.utils.DateUtils;
 import com.editor.image.utils.Result;
 import com.editor.image.viewmodels.MainViewModel;
 import com.editor.image.viewmodels.MainViewModelFactory;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class EditorWallFragment extends Fragment {
@@ -32,6 +37,7 @@ public class EditorWallFragment extends Fragment {
     private FragmentEditorWallBinding binding;
     private MainViewModel mainViewModel;
     private List<EditorWall> editorWalls;
+    private List<EditorWallSimplified> editorWallSimplifieds = new ArrayList<>();
     private LoadingDialog loadingDialog = new LoadingDialog();
 
     @Nullable
@@ -65,7 +71,7 @@ public class EditorWallFragment extends Fragment {
                 if (listResult instanceof Result.Success) {
                     hideLoading();
                     editorWalls = listResult.getData();
-                    fillDataToRecyclerView();
+                    prepareList();
                 }
 
                 if (listResult instanceof Result.Error) {
@@ -84,14 +90,29 @@ public class EditorWallFragment extends Fragment {
         loadingDialog.dismissAllowingStateLoss();
     }
 
-    private void fillDataToRecyclerView() {
-        EditorWallAdapter editorWallAdapter = new EditorWallAdapter(editorWalls);
-        editorWallAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                showExpandedImage(editorWalls.get(position));
-            }
+    private void prepareList() {
+        for (int i = 0; i < editorWalls.size(); i++) {
+            EditorWall editorWall = editorWalls.get(i);
+            editorWallSimplifieds.add(
+                new EditorWallSimplified(
+                        editorWall.getOriginalImageUrl(),
+                        editorWall.getEditedImageUrl(),
+                        DateUtils.getDate(editorWall.getUpdated())
+                )
+            );
+        }
+
+        editorWallSimplifieds.sort((o1, o2) -> {
+            Date date1 = o1.getLastUpdatedOn();
+            Date date2 = o2.getLastUpdatedOn();
+            return date2.compareTo(date1);
         });
+        fillDataToRecyclerView();
+    }
+
+    private void fillDataToRecyclerView() {
+        EditorWallAdapter editorWallAdapter = new EditorWallAdapter(editorWallSimplifieds);
+        editorWallAdapter.setOnItemClickListener(position -> showExpandedImage(editorWallSimplifieds.get(position)));
         binding.recyclerEditorWall.setAdapter(editorWallAdapter);
     }
 
@@ -99,9 +120,9 @@ public class EditorWallFragment extends Fragment {
         Snackbar.make(binding.getRoot(), R.string.image_loading_failed, Snackbar.LENGTH_SHORT).show();
     }
 
-    private void showExpandedImage(EditorWall editorWall) {
+    private void showExpandedImage(EditorWallSimplified editorWallSimplified) {
         EditorWallFragmentDirections.ToEditorWallDetailFragment toEditorWallDetailFragment = EditorWallFragmentDirections.toEditorWallDetailFragment();
-        toEditorWallDetailFragment.setImages(editorWall);
+        toEditorWallDetailFragment.setEditorWallSimplified(editorWallSimplified);
         NavHostFragment.findNavController(EditorWallFragment.this).navigate(toEditorWallDetailFragment);
     }
 }
